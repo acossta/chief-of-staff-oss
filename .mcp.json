@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "gmail": {
+      "type": "http",
+      "url": "https://server.smithery.ai/gmail"
+    },
+    "googledrive": {
+      "type": "http",
+      "url": "https://server.smithery.ai/googledrive"
+    },
+    "googlecalendar": {
+      "type": "http",
+      "url": "https://server.smithery.ai/googlecalendar"
+    },
+    "slack": {
+      "type": "http",
+      "url": "https://server.smithery.ai/slack"
+    },
+    "reddit": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/adhikasp/mcp-reddit.git", "mcp-reddit"],
+      "env": {}
+    }
+  }
+}
