@@ -1,5 +1,5 @@
 ---
-name: founder-coach
+name: coach
 description: |
   Executive coaching for startup founders based on methodologies from world-class coaches: Bill Campbell, Jerry Colonna, Marshall Goldsmith, Ben Horowitz, Fred Kofman, and Matt Mochary. Use this skill to:
   (1) Coach the founder through difficult decisions, team issues, or strategic challenges

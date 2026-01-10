@@ -15,11 +15,12 @@ Use `mcp__googlecalendar__get_current_date_time` to get the current date, then c
 - Gmail: `YYYY/MM/DD` (e.g., `2026/01/08`)
 - Slack: Standard date format
 - Calendar: RFC3339 timestamps (e.g., `2026-01-08T00:00:00Z` to `2026-01-08T23:59:59Z`)
+- GitHub (`gh` CLI): `YYYY-MM-DD` (e.g., `2026-01-08`)
 - File output: `YYYY-MM-DD` (e.g., `2026-01-08`)
 
 ### Step 2: Fetch Data in Parallel
 
-Spawn 4 subagents using the Task tool with `run_in_background: true` to fetch data in parallel:
+Spawn 5 subagents using the Task tool with `run_in_background: true` to fetch data in parallel:
 
 #### Notion Subagent
 ```
@@ -88,6 +89,29 @@ Return:
 - A list of today's scheduled meetings with title, time, and attendees
 ```
 
+#### GitHub Subagent
+```
+Fetch GitHub activity from yesterday in the BrainGridAI organization:
+
+**Using gh CLI via Bash tool:**
+1. Fetch commits:
+   `gh search commits --author=@me --committer-date=">=${YESTERDAY}" --owner=BrainGridAI --limit=50 --json repository,sha,commit`
+
+2. Fetch PRs created:
+   `gh search prs --author=@me --created=">=${YESTERDAY}" --owner=BrainGridAI --limit=20 --json repository,title,state,url,createdAt`
+
+3. Fetch PRs merged:
+   `gh search prs --author=@me --merged=">=${YESTERDAY}" --owner=BrainGridAI --limit=20 --json repository,title,url`
+
+4. Fetch issues created:
+   `gh search issues --author=@me --created=">=${YESTERDAY}" --owner=BrainGridAI --limit=20 --json repository,title,state,url`
+
+Parse the JSON output and return:
+- List of commits grouped by repository with commit messages
+- List of PRs with title, status (opened/merged), and repository
+- List of issues created with title and repository
+```
+
 ### Step 3: Aggregate Results
 
 Wait for all subagents to complete using TaskOutput tool, then collect all results into a unified list of work items.
@@ -128,6 +152,14 @@ Create a markdown summary organized by categories:
 - Emails: [Summary of important emails sent]
 - Slack: [Key conversations/decisions]
 
+## GitHub Activity
+- **Commits**: [Summary of commits across repositories]
+  - [repo-name]: [Key changes from commit messages]
+- **Pull Requests**:
+  - [Merged/Opened] [PR Title] in [repo-name]
+- **Issues**:
+  - [Opened] [Issue Title] in [repo-name]
+
 ## Other Work Items
 - [Any other relevant work]
 
@@ -154,6 +186,7 @@ Show the generated summary to the user and confirm the file was saved.
 ## Important Notes
 
 - If any data source fails or times out, continue with the available data and note what was unavailable
+- If `gh` CLI fails or isn't authenticated, note that GitHub data was unavailable and continue with other sources
 - Prioritize quality over quantity - focus on meaningful work items, not every small action
 - Keep the summary concise and actionable for a team standup context
 - The summary should be readable in 1-2 minutes
